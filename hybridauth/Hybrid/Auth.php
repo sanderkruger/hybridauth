@@ -375,6 +375,8 @@ class Hybrid_Auth {
 			echo 'Redirecting, please wait...';
 			echo '</body>';
 			echo '</html>';
+		} elseif ($mode == "EXP") {
+		    throw new Hybrid_Exception($url);
 		}
 
 		die();
