@@ -215,6 +215,10 @@ class OAuth2Client
 
     $this->http_info = array();
     $ch = curl_init();
+    $headers = $this->curl_header;
+    if ($type == "POST" && isset($params['body'])) {
+        $headers[] = 'Content-Type : application/json';
+    }
 
     curl_setopt($ch, CURLOPT_URL            , $url );
     curl_setopt($ch, CURLOPT_RETURNTRANSFER , 1 );
@@ -223,7 +227,7 @@ class OAuth2Client
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT , $this->curl_connect_time_out );
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER , $this->curl_ssl_verifypeer );
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST , $this->curl_ssl_verifyhost );
-    curl_setopt($ch, CURLOPT_HTTPHEADER     , $this->curl_header );
+    curl_setopt($ch, CURLOPT_HTTPHEADER     , $headers );
 
     if ($this->curl_compressed){
       curl_setopt($ch, CURLOPT_ENCODING, "gzip,deflate");
