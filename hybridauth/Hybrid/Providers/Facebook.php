@@ -389,5 +389,78 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model {
 
         return $activities;
     }
+    
+    function getUserPosts()
+    {
+        try {
+            $fields = [
+                'id',
+                'message',
+                'created_time',
+                'full_picture',
+                'story'
+            ];
+            $response = $this->api->get('/me/posts?fields=' . implode(',', $fields), $this->token('access_token'));
+            $data = $response->getDecodedBody();
+        } catch (FacebookSDKException $e) {
+            throw new Exception("Could not get user posts! {$this->providerId} returned an error: {$e->getMessage()}", 6, $e);
+        }
+        
+        // Store the posts.
+        if (array_key_exists('id', $data)) {
+            $this->api->lastResponse->decodedBody->data->id = (array_key_exists('id', $data)) ? $data['id'] : "";
+        }
+        if (array_key_exists('created_time', $data)) {
+            $this->api->lastResponse->decodedBody->data->created_time = (array_key_exists('created_time', $data)) ? $data['created_time'] : "";
+        }
+        if (array_key_exists('story', $data)) {
+            $this->api->lastResponse->decodedBody->data->story = (array_key_exists('story', $data)) ? $data['story'] : "";
+        }
+        if (array_key_exists('full_picture', $data)) {
+            $this->api->lastResponse->decodedBody->data->full_picture = (array_key_exists('full_picture', $data)) ? $data['full_picture'] : "";
+        }
+        if (array_key_exists('message', $data)) {
+            $this->api->lastResponse->decodedBody->data->message = (array_key_exists('message', $data)) ? $data['message'] : "";
+        }
+        
+        return $data;
+    }
+    
+    function getPostsDetails($postID)
+    {
+        try {
+            $response = $this->api->get('/' . $postID . '?fields=shares,likes.summary(true),comments.summary(true)', $this->token('access_token'));
+            $data = $response->getDecodedBody();
+        } catch (FacebookSDKException $e) {
+            throw new Exception("Could not get post details! {$this->providerId} returned an error: {$e->getMessage()}", 6, $e);
+        }
+        
+        return $data;
+    }
+    
+    function getFriendsCount()
+    {
+        try {
+            $response = $this->api->get('/me/friends', $this->token('access_token'));
+            $data = $response->getDecodedBody();
+        } catch (FacebookSDKException $e) {
+            throw new Exception("Could not get friends count! {$this->providerId} returned an error: {$e->getMessage()}", 6, $e);
+        }
+        
+        return $data;
+    }
+    
+    function revokeAccess()
+    {
+        try {
+            $params = [];
+            $response = $this->api->delete('/me/permissions', $params, $this->token('access_token'));
+            $data = $response->getDecodedBody();
+        } catch (FacebookSDKException $e) {
+            throw new Exception("Could not revoke access! {$this->providerId} returned an error: {$e->getMessage()}", 6, $e);
+        }
+        
+        return $data;
+    }
 
 }
