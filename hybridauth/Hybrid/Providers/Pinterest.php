@@ -153,7 +153,7 @@ class Hybrid_Providers_Pinterest extends Hybrid_Provider_Model_OAuth2 {
    *   Other error: Null.
    */
   function getUserBoardPins($username, $board_name) {
-    $board = $this->api->api('boards/' . $username . '/' . $board_name . '/pins/', 'GET');
+    $board = $this->api->api('boards/' . $username . '/' . $board_name . '/pins/', 'GET', array('fields' => 'id,url,note,link,counts,created_at,creator,board,color,media,attribution,image,metadata'));
     $data = !empty($board->data) ? $board->data : NULL;
 
     return $data;
