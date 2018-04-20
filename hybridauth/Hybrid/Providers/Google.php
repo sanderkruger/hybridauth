@@ -301,6 +301,49 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2 {
 		}
 		return $url;
 	}
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	function setUserStatus($status) {
+	    
+	    $response = $this->api->post('https://www.googleapis.com/plusDomains/v1/people/userId/activities', array('object' => array('originalContent' => $status['message'])));
+	    
+	    // check the last HTTP status code returned
+	    if ($this->api->http_code != 200) {
+	        throw new Exception("Update user status failed! {$this->providerId} returned an error. " . $this->errorMessageByStatus($this->api->http_code));
+	    }
+	    
+	    return $response;
+	}
+	
+	function getFollowersCount() {
+	    
+	    $this->refreshToken();
+	    
+	    $response = $this->api->api("https://www.googleapis.com/plus/v1/people/me");
+	    
+	    // check the last HTTP status code returned
+	    if ($this->api->http_code != 200) {
+	        throw new Exception("Could not get user's google plus followers count! {$this->providerId} returned an error. " . $this->errorMessageByStatus($this->api->http_code));
+	    }
+	    
+	    return $response->circledByCount;
+	}
+	
+	function getUserPosts() {
+	    
+	    $this->refreshToken();
+	    
+	    $response = $this->api->api("https://www.googleapis.com/plus/v1/people/me/activities/public");
+	    
+	    // check the last HTTP status code returned
+	    if ($this->api->http_code != 200) {
+	        throw new Exception("Could not get user's google plus posts! {$this->providerId} returned an error. " . $this->errorMessageByStatus($this->api->http_code));
+	    }
+	    
+	    return $response;
+	}
 
 }
 
