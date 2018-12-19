@@ -14,7 +14,7 @@ class Hybrid_Providers_LinkedIn extends Hybrid_Provider_Model_OAuth2 {
     /**
      * {@inheritdoc}
      */
-    public $scope = "r_basicprofile r_emailaddress";
+    public $scope = "r_basicprofile r_emailaddress w_share";
 
     /**
      * {@inheritdoc}
@@ -23,7 +23,7 @@ class Hybrid_Providers_LinkedIn extends Hybrid_Provider_Model_OAuth2 {
         parent::initialize();
 
         // Provider api end-points.
-        $this->api->api_base_url = "https://api.linkedin.com/v1/";
+        $this->api->api_base_url = "https://api.linkedin.com/v2";
         $this->api->authorize_url = "https://www.linkedin.com/oauth/v2/authorization";
         $this->api->token_url = "https://www.linkedin.com/oauth/v2/accessToken";
     }
